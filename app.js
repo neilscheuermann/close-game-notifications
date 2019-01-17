@@ -1,5 +1,6 @@
 const MySportsFeeds = require('mysportsfeeds-node')
 const secrets = require('./secrets')
+const cron = require('node-cron')
 
 const apikey = secrets.API_KEY
 const password = secrets.PASSWORD
@@ -24,4 +25,7 @@ const fetchData = async () => {
   }
 }
 
-fetchData()
+// When this script is running, fetchData() will run every 15 seconds.
+cron.schedule('*/10 * * * * *', () => {
+  fetchData()
+})

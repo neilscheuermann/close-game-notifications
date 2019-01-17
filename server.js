@@ -1,4 +1,5 @@
 const axios = require('axios')
+const cron = require('node-cron')
 const secrets = require('./secrets')
 
 const apikey = secrets.API_KEY
@@ -19,14 +20,9 @@ const todaysLiveGames = async () => {
       type: "GET",
       url: `https://api.mysportsfeeds.com/v2.0/pull/nba/2018-2019-regular/date/20190117/games.json`,
       dataType: 'json',
-      async: false,
       headers: {
         "Authorization": "Basic " + encryptedAPIKey
       },
-      data: '{ "comment" }',
-      success: function (){
-        console.log('Thanks for your comment!');
-      }
     });
 
     const games = response.data.games
@@ -44,17 +40,12 @@ const todaysLiveGames = async () => {
 const fetchCurrentScore = async (dateAwayHome) => {
   try {
     const response = await axios({
-      type: "GET",
+      method: "get",
       url: `https://api.mysportsfeeds.com/v2.0/pull/nba/2018-2019-regular/games/${dateAwayHome}/boxscore.json`,
       dataType: 'json',
-      async: false,
       headers: {
         "Authorization": "Basic " + encryptedAPIKey
       },
-      data: '{ "comment" }',
-      success: function (){
-        console.log('Thanks for your comment!');
-      }
     });
 
     const lastUpdatedOn = response.data.lastUpdatedOn
@@ -87,9 +78,16 @@ const fetchCurrentScore = async (dateAwayHome) => {
   }
 }
 
-  // fetchCurrentScore('20190116-TOR-BOS');
-  // fetchCurrentScore('20190116-BRO-HOU');
-  // fetchCurrentScore('20190116-MIL-MEM');
-  // fetchCurrentScore('20190116-SAS-DAL');
-todaysLiveGames();
+fetchCurrentScore('20190116-TOR-BOS');
+// fetchCurrentScore('20190116-BRO-HOU');
+// fetchCurrentScore('20190116-MIL-MEM');
+// fetchCurrentScore('20190116-SAS-DAL');
+
+// When this script is running, todaysLiveGames() will run every 15 seconds.
+// COULD FIND A WAY TO DYNAMICALLY INPUT TIMES TO RUN DEPENDING ON THE SCHEDULED GAMES THAT DAY.
+// Cron job scheduling examples - https://github.com/kelektiv/node-cron/tree/master/examples
+cron.schedule('*/15 * * * * *', () => {
+  console.log('cron ran at ' + new Date())
+  todaysLiveGames();
+})
 
