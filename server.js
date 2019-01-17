@@ -17,7 +17,7 @@ const todaysLiveGames = async () => {
   try {
     const response = await axios({
       type: "GET",
-      url: `https://api.mysportsfeeds.com/v2.0/pull/nba/2018-2019-regular/date/20190116/games.json`,
+      url: `https://api.mysportsfeeds.com/v2.0/pull/nba/2018-2019-regular/date/20190117/games.json`,
       dataType: 'json',
       async: false,
       headers: {
@@ -31,9 +31,11 @@ const todaysLiveGames = async () => {
 
     const games = response.data.games
     const liveGames = games.filter(game => game.schedule.playedStatus === "LIVE").map(game => `${game.schedule.awayTeam.abbreviation} vs. ${game.schedule.homeTeam.abbreviation}`)
+    const upcomingGames = games.filter(game => game.schedule.playedStatus === "UNPLAYED").map(game => `${game.schedule.awayTeam.abbreviation} vs. ${game.schedule.homeTeam.abbreviation}`)
 
     console.log('Today: ', Object.keys(response.data.games[0]));
-    console.log(liveGames);
+    console.log('live games: ', liveGames);
+    console.log('upcoming games: ', upcomingGames)
   } catch (error) {
     console.error('Neils error: ', error)
   }
@@ -73,7 +75,7 @@ const fetchCurrentScore = async (dateAwayHome) => {
       return `${score} --------- ${timeRemaining}.`
     }
 
-    console.log(Object.keys(response.data.scoring));
+    // console.log(Object.keys(response.data.scoring));
     console.log('Last updated on: ', lastUpdatedOn);
     console.log(currentDisplay())
     console.log('Seconds remaingin in quarter: ', secondsRemaingingInQuarter)
@@ -85,6 +87,9 @@ const fetchCurrentScore = async (dateAwayHome) => {
   }
 }
 
-fetchCurrentScore('20190116-ORL-DET');
+  // fetchCurrentScore('20190116-TOR-BOS');
+  // fetchCurrentScore('20190116-BRO-HOU');
+  // fetchCurrentScore('20190116-MIL-MEM');
+  // fetchCurrentScore('20190116-SAS-DAL');
 todaysLiveGames();
 
