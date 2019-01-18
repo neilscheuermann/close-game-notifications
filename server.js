@@ -50,8 +50,9 @@ cron.schedule('*/15 * * * * *', () => {
   console.log(`****** Cron Job ran at ${new Date()} *******`);
 
   todaysGames('20190118').then(messagesArr => {
-    messagesArr.forEach(message => {
-      console.log(message);
+    if (!messagesArr.length) console.log('There are no live games.')
+    else messagesArr.forEach(message => {
+      console.log(message)
       // twilioClient.messages.create({
       //   to: MY_NUMBER,
       //   from: TWILIO_NUMBER,
