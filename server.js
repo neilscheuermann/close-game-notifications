@@ -56,8 +56,15 @@ cron.schedule('*/15 * * * * *', () => {
       twilioClient.messages.create({
         to: MY_NUMBER,
         from: TWILIO_NUMBER,
-        body: 'Heroku is working.'
+        body: message
       })
     });
   });
 });
+
+// Test message
+twilioClient.messages.create({
+  to: 8013895313,
+  from: 4159802839,
+  body: 'Heroku is working.'
+})
