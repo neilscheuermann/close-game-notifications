@@ -2,7 +2,7 @@ const createMessagesForLiveGames = response => {
 
   // Creates an array of only the live games.
   const allLiveGames = response.data.games.filter(
-    game => game.schedule.playedStatus === 'UNPLAYED'
+    game => game.schedule.playedStatus === 'LIVE'
   );
 
   // Creates a human readable message for each live game.
