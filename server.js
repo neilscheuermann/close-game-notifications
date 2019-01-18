@@ -61,10 +61,3 @@ cron.schedule('*/15 * * * * *', () => {
     });
   });
 });
-
-// Test message
-twilioClient.messages.create({
-  to: 8013895313,
-  from: 4159802839,
-  body: 'Heroku is working.'
-})
