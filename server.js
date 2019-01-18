@@ -49,7 +49,7 @@ const todaysGames = async date => {
 cron.schedule('*/15 * * * * *', () => {
   console.log(`****** Cron Job ran at ${new Date()} *******`);
 
-  todaysGames('20190117').then(messagesArr => {
+  todaysGames('20190118').then(messagesArr => {
     messagesArr.forEach(message => {
       console.log(message);
       // twilioClient.messages.create({
