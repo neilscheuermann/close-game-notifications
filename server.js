@@ -3,7 +3,7 @@ const cron = require('node-cron');
 const twilio = require('twilio');
 if (process.env.NODE_ENV !== 'production') require('./secrets');
 // Helper functions
-const {createMessagesForLiveGames, formatDate} = require('./utilityFunctions');
+const {createMessagesForNailBiterGames, formatDate} = require('./utilityFunctions');
 // Secrets
 const {
   TWILIO_ACCOUNT_SID,
@@ -27,7 +27,7 @@ const mySportsFeedsEncryption = Buffer.from(
 const todaysGames = async date => {
   try {
     // Pulls a JSON file of most up-to-date live data for all games for the requested date.
-    const response = await axios({
+    const {data} = await axios({
       type: 'GET',
       url: `https://api.mysportsfeeds.com/v2.0/pull/nba/2018-2019-regular/date/${date}/games.json`,
       dataType: 'json',
@@ -36,29 +36,35 @@ const todaysGames = async date => {
       },
     });
 
-    const arrOfMessages = createMessagesForLiveGames(response);
-
-    return arrOfMessages;
+    // Returns an array of currated data for live nail-biter games.
+    return createMessagesForNailBiterGames(data);
   } catch (error) {
     console.error('Error within todaysGames function: ', error);
   }
 };
 
+const messageHasBeenSent = {}
+
 // When this script is running, fetchCurrentScore() will run every 15 seconds.
-// COULD FIND A WAY TO DYNAMICALLY INPUT TIMES TO RUN DEPENDING ON THE SCHEDULED GAMES THAT DAY.
-// Cron job scheduling examples - https://github.com/kelektiv/node-cron/tree/master/examples
+// TODO: FIND A WAY TO DYNAMICALLY INPUT TIMES TO RUN DEPENDING ON THE SCHEDULED GAMES THAT DAY.
 cron.schedule('*/15 * * * * *', () => {
   console.log(`****** Cron Job ran at ${new Date()} *******`);
 
   todaysGames(currentDate).then(messagesArr => {
-    if (!messagesArr.length) console.log('There are no live games.')
+    if (!messagesArr.length) console.log('There are no nail-biters.')
+
+    // Loops through each message of the nail-biter array.
     else messagesArr.forEach(message => {
-      console.log(message)
-      // twilioClient.messages.create({
-      //   to: MY_NUMBER,
-      //   from: TWILIO_NUMBER,
-      //   body: message
-      // })
+      // Sends one notification per close game, then adds message to tracker object to prevent repeated messages from being sent.
+      if (!messageHasBeenSent[message.gameId]) {
+        console.log(message)
+        twilioClient.messages.create({
+          to: MY_NUMBER,
+          from: TWILIO_NUMBER,
+          body: message.message
+        })
+        messageHasBeenSent[message.gameId] = true
+      }
     });
   });
 });
