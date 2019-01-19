@@ -47,26 +47,46 @@ const messageHasBeenSent = {}
 
 // When this script is running, fetchCurrentScore() will run every 15 seconds.
 // TODO: FIND A WAY TO DYNAMICALLY INPUT TIMES TO RUN DEPENDING ON THE SCHEDULED GAMES THAT DAY.
-cron.schedule('*/15 * * * * *', () => {
-  console.log(`****** Cron Job ran at ${new Date()} *******`);
+// cron.schedule('*/15 * * * * *', () => {
+//   console.log(`****** Cron Job ran at ${new Date()} *******`);
 
-  todaysGames(currentDate).then(messagesArr => {
-    if (!messagesArr.length) console.log('There are no nail-biters.')
+//   todaysGames(currentDate).then(messagesArr => {
+//     if (!messagesArr.length) console.log('There are no nail-biters.')
 
-    // Loops through each message of the nail-biter array.
-    else messagesArr.forEach(message => {
-      // Sends one notification per close game, then adds message to tracker object to prevent repeated messages from being sent.
-      if (!messageHasBeenSent[message.gameId]) {
-        console.log(message)
-        twilioClient.messages.create({
-          to: MY_NUMBER,
-          from: TWILIO_NUMBER,
-          body: message.message
-        })
-        messageHasBeenSent[message.gameId] = true
-      }
-    });
-  });
-});
+//     // Loops through each message of the nail-biter array.
+//     else messagesArr.forEach(message => {
+//       // Sends one notification per close game, then adds message to tracker object to prevent repeated messages from being sent.
+//       if (!messageHasBeenSent[message.gameId]) {
+//         console.log(message)
+//         twilioClient.messages.create({
+//           to: MY_NUMBER,
+//           from: TWILIO_NUMBER,
+//           body: message.message
+//         })
+//         messageHasBeenSent[message.gameId] = true
+//       }
+//     });
+//   });
+// });
 
-// console.log('******* SUCCESFULLY PUSHED TO HEROKU *******');
+// Supposed to run at 10:05, 10:35, 11:05, and 11:35pm on Mon-Fri
+cron.schedule('5,35 22-23 * * 1-5', () => {
+  console.log(`******* Cron job ran at ${new Date()} *******`);
+
+  twilioClient.messages.create({
+    to: MY_NUMBER,
+    from: TWILIO_NUMBER,
+    body: new Date().toString()
+  })
+})
+
+// Supposed to run at 3:05, 3:35, 4:05, and 4:35pm on Sat-Sun
+cron.schedule('5,35 3-4 * * 6-7', () => {
+  console.log(`******* Cron job ran at ${new Date()} *******`);
+
+  twilioClient.messages.create({
+    to: MY_NUMBER,
+    from: TWILIO_NUMBER,
+    body: new Date().toString()
+  })
+})
