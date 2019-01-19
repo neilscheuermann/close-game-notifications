@@ -90,13 +90,3 @@ cron.schedule('5,35 3-4 * * 6-7', () => {
     body: new Date().toString()
   })
 })
-
-cron.schedule('* * * * *', () => {
-  console.log(`******* TEST TEST TEST ${currentDate} *******`);
-
-  twilioClient.messages.create({
-    to: MY_NUMBER,
-    from: TWILIO_NUMBER,
-    body: currentDate
-  })
-})
