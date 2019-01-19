@@ -51,11 +51,11 @@ cron.schedule('*/15 * * * * *', () => {
     if (!messagesArr.length) console.log('There are no live games.')
     else messagesArr.forEach(message => {
       console.log(message)
-      twilioClient.messages.create({
-        to: MY_NUMBER,
-        from: TWILIO_NUMBER,
-        body: message
-      })
+      // twilioClient.messages.create({
+      //   to: MY_NUMBER,
+      //   from: TWILIO_NUMBER,
+      //   body: message
+      // })
     });
   });
 });
