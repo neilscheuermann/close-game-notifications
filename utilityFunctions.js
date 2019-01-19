@@ -1,20 +1,22 @@
+// Takes data about the day's scheduled NBA games and returns an array of
+// messages for only the live games that are close with x number of minutes
+// left in the fourth.
 const createMessagesForNailBiterGames = data => {
-
   // Creates an array of only the live games.
   const allLiveGames = data.games.filter(
     game => game.schedule.playedStatus === 'LIVE'
   );
 
-  // ***** ADJUST NAIL-BITER PREFERENCES HERE *****
-  // Checks to see if any live games are within 10 points with less than 10 minutes remaining in the 4th.
+  // **VVV** ADJUST NAIL-BITER PREFERENCES HERE **VVV**
+  // Checks to see if any live games are within 10 points with less than 10
+  // minutes remaining in the 4th.
   const nailBiters = allLiveGames.filter(game => {
     if (
       game.score.currentQuarter === 4 &&
       game.score.currentQuarterSecondsRemaining < 600 &&
       Math.abs(game.score.awayScoreTotal - game.score.homeScoreTotal) <= 10
     ) return game
-    // return game
-  })
+  });
 
   // Creates a human readable message for each nail-biter.
   const nailBiterMessagesArr = nailBiters.map(game => {
@@ -67,7 +69,8 @@ const createMessagesForNailBiterGames = data => {
         : currentQuarter === 4
         ? 'th'
         : '';
-    // Determines the minutes and seconds to display in mm:ss format depending on how many total seconds remain in the quarter.
+    // Determines the minutes and seconds to display in mm:ss format depending
+    // on how many total seconds remain in the quarter.
     const totalSecondsRemaingingInQuarter =
       game.score.currentQuarterSecondsRemaining;
     const minutesRemaining = Math.floor(totalSecondsRemaingingInQuarter / 60);
@@ -76,7 +79,8 @@ const createMessagesForNailBiterGames = data => {
         ? totalSecondsRemaingingInQuarter % 60
         : `0${totalSecondsRemaingingInQuarter % 60}`;
 
-    // Compiles a neat final string using all the above data, depending on whether it's a quarter or an intermission.
+    // Compiles a neat final string using all the above data, depending on
+    // whether it's a quarter or an intermission.
     const compiledMessage = () => {
       const score = `${awayTeamFullName}: ${awayScoreTotal} - ${homeTeamFullName}: ${homeScoreTotal}`;
       const quarterMessage = `${minutesRemaining}:${secondsRemaining} left in the ${currentQuarter}${suffix}`;
@@ -86,28 +90,47 @@ const createMessagesForNailBiterGames = data => {
       return `${score} --------- ${timeRemaining}.`;
     };
 
-    // Returns the compiled message for each game.
-    return {message: compiledMessage(), gameId: game.schedule.id};
+    // Returns an object with the compiled message and game id for each
+    // nail-biter game.
+    return { message: compiledMessage(), gameId: game.schedule.id };
   });
 
-  // Returns an array of compiled messages for each live game.
+  // Returns an array of objects with compiled messages and game for each
+  // nail-biter game.
   return nailBiterMessagesArr;
 };
 
 // Formats date to YYYYMMDD
-const formatDate = (date) => {
+const formatDate = date => {
   var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
+    month = '' + (d.getMonth() + 1),
+    day = '' + d.getDate(),
+    year = d.getFullYear();
 
   if (month.length < 2) month = '0' + month;
   if (day.length < 2) day = '0' + day;
 
   return [year, month, day].join('');
-}
+};
+
+// Finds the start time for each daily game and returns the hour to start and
+// end the cron job that will live data for the games.
+const dailyCronJobSchedule = async fetchDailyGameData => {
+  const data = await fetchDailyGameData();
+
+  const [firstGameStart, lastGameStart] = data.games
+    .map(game => new Date(game.schedule.startTime).getHours())
+    .filter((game, idx, arr) => idx === 0 || idx === arr.length - 1);
+  // Daily cron job should start 1 hour after the first game starts and end 3-4
+  // hours after the last game starts.
+  const cronJobStart = firstGameStart + 1;
+  const cronJobEnd = lastGameStart + 3;
+
+  return [cronJobStart, cronJobEnd];
+};
 
 module.exports = {
   createMessagesForNailBiterGames,
-  formatDate
+  formatDate,
+  dailyCronJobSchedule,
 };
