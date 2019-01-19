@@ -1,16 +1,27 @@
-const createMessagesForLiveGames = response => {
+const createMessagesForNailBiterGames = data => {
 
   // Creates an array of only the live games.
-  const allLiveGames = response.data.games.filter(
+  const allLiveGames = data.games.filter(
     game => game.schedule.playedStatus === 'LIVE'
   );
 
-  // Creates a human readable message for each live game.
-  const liveGameMessagesArr = allLiveGames.map(game => {
+  // ***** ADJUST NAIL-BITER PREFERENCES HERE *****
+  // Checks to see if any live games are within 10 points with less than 10 minutes remaining in the 4th.
+  const nailBiters = allLiveGames.filter(game => {
+    if (
+      game.score.currentQuarter === 4 &&
+      game.score.currentQuarterSecondsRemaining < 600 &&
+      Math.abs(game.score.awayScoreTotal - game.score.homeScoreTotal) <= 10
+    ) return game
+    // return game
+  })
+
+  // Creates a human readable message for each nail-biter.
+  const nailBiterMessagesArr = nailBiters.map(game => {
     // Uses each team's abbreviations to create a string of their full names.
     const awayTeamAbb = game.schedule.awayTeam.abbreviation;
     const homeTeamAbb = game.schedule.homeTeam.abbreviation;
-    const awayTeamFullName = response.data.references.teamReferences.reduce(
+    const awayTeamFullName = data.references.teamReferences.reduce(
       (name, team) => {
         if (team.abbreviation === awayTeamAbb) {
           name = `${team.city} ${team.name}`;
@@ -19,7 +30,7 @@ const createMessagesForLiveGames = response => {
       },
       ''
     );
-    const homeTeamFullName = response.data.references.teamReferences.reduce(
+    const homeTeamFullName = data.references.teamReferences.reduce(
       (name, team) => {
         if (team.abbreviation === homeTeamAbb) {
           name = `${team.city} ${team.name}`;
@@ -76,11 +87,27 @@ const createMessagesForLiveGames = response => {
     };
 
     // Returns the compiled message for each game.
-    return compiledMessage();
+    return {message: compiledMessage(), gameId: game.schedule.id};
   });
 
   // Returns an array of compiled messages for each live game.
-  return liveGameMessagesArr;
+  return nailBiterMessagesArr;
 };
 
-module.exports = createMessagesForLiveGames;
+// Formats date to YYYYMMDD
+const formatDate = (date) => {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [year, month, day].join('');
+}
+
+module.exports = {
+  createMessagesForNailBiterGames,
+  formatDate
+};
