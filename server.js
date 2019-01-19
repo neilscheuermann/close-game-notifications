@@ -2,6 +2,9 @@ const axios = require('axios');
 const cron = require('node-cron');
 const twilio = require('twilio');
 if (process.env.NODE_ENV !== 'production') require('./secrets');
+// Helper functions
+const {createMessagesForLiveGames, formatDate} = require('./utilityFunctions');
+// Secrets
 const {
   TWILIO_ACCOUNT_SID,
   TWILIO_AUTH_TOKEN,
@@ -10,22 +13,17 @@ const {
   MY_NUMBER,
   TWILIO_NUMBER,
 } = process.env;
+const currentDate = formatDate(new Date())
 
-// Helper functions
-const {createMessagesForLiveGames, formatDate} = require('./utilityFunctions');
-
+// Authenticating twilio account
 const twilioClient = new twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
+// Encryption code for MySportsFeeds API requests
 const mySportsFeedsEncryption = Buffer.from(
   SPORTS_FEEDS_API_KEY + ':' + SPORTS_FEEDS_PASSWORD
 ).toString('base64');
 
-const currentDate = formatDate(new Date())
 
-
-/*
-played status is either UNPLAYED, LIVE, COMPLETED_PENDING_REVIEW, or COMLETED
-*/
 const todaysGames = async date => {
   try {
     // Pulls a JSON file of most up-to-date live data for all games for the requested date.

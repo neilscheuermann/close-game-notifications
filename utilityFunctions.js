@@ -5,8 +5,18 @@ const createMessagesForLiveGames = response => {
     game => game.schedule.playedStatus === 'LIVE'
   );
 
-  // Creates a human readable message for each live game.
-  const liveGameMessagesArr = allLiveGames.map(game => {
+  // ***** ADJUST NAIL-BITER PREFERENCES HERE *****
+  // Checks to see if any live games are within 10 points with less than 5 minutes remaining in the 4th.
+  const nailBiters = allLiveGames.filter(game => {
+    if (
+      game.score.currentQuarter === 4 &&
+      game.score.currentQuarterSecondsRemaining < 600 &&
+      Math.abs(game.score.awayScoreTotal - game.score.homeScoreTotal) <= 10
+    ) return game
+  })
+
+  // Creates a human readable message for each nail-biter.
+  const liveGameMessagesArr = nailBiters.map(game => {
     // Uses each team's abbreviations to create a string of their full names.
     const awayTeamAbb = game.schedule.awayTeam.abbreviation;
     const homeTeamAbb = game.schedule.homeTeam.abbreviation;
