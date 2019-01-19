@@ -69,24 +69,4 @@ const messageHasBeenSent = {}
 //   });
 // });
 
-// Supposed to run at 10:05, 10:35, 11:05, and 11:35pm on Mon-Fri
-cron.schedule('5,35 22-23 * * 1-5', () => {
-  console.log(`******* Cron job ran at ${new Date()} *******`);
-
-  twilioClient.messages.create({
-    to: MY_NUMBER,
-    from: TWILIO_NUMBER,
-    body: new Date().toString()
-  })
-})
-
-// Supposed to run at 3:05, 3:35, 4:05, and 4:35pm on Sat-Sun
-cron.schedule('5,35 3-4 * * 6-7', () => {
-  console.log(`******* Cron job ran at ${new Date()} *******`);
-
-  twilioClient.messages.create({
-    to: MY_NUMBER,
-    from: TWILIO_NUMBER,
-    body: new Date().toString()
-  })
-})
+console.log('Temp pushed to heroku without cron job running.')
