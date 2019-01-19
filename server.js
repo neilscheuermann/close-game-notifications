@@ -80,8 +80,8 @@ cron.schedule('5,35 22-23 * * 1-5', () => {
   })
 })
 
-// Supposed to run at 3:05, 3:35, 4:05, and 4:35pm on Sat-Sun
-cron.schedule('5,35 3-4 * * 6-7', () => {
+// Supposed to run at 6:05, 6:35, 7:05, and 7:35pm on Sat-Sun
+cron.schedule('5,35 6-7 * * 6-7', () => {
   console.log(`******* Cron job ran at ${new Date()} *******`);
 
   twilioClient.messages.create({
