@@ -2,14 +2,18 @@ const axios = require('axios');
 const cron = require('node-cron');
 const twilio = require('twilio');
 if (process.env.NODE_ENV !== 'production') require('./secrets');
-const {TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, SPORTS_FEEDS_API_KEY, SPORTS_FEEDS_PASSWORD, MY_NUMBER, TWILIO_NUMBER} = process.env
+const {
+  TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN,
+  SPORTS_FEEDS_API_KEY,
+  SPORTS_FEEDS_PASSWORD,
+  MY_NUMBER,
+  TWILIO_NUMBER,
+} = process.env;
 
 const createMessagesForLiveGames = require('./utilityFunctions');
 
-const twilioClient = new twilio(
-  TWILIO_ACCOUNT_SID,
-  TWILIO_AUTH_TOKEN
-);
+const twilioClient = new twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
 
 const mySportsFeedsEncryption = Buffer.from(
   SPORTS_FEEDS_API_KEY + ':' + SPORTS_FEEDS_PASSWORD
@@ -58,4 +62,4 @@ const todaysGames = async date => {
 //   });
 // });
 
-console.log('******* SUCCESFULLY PUSHED TO HEROKU *******')
+console.log('******* SUCCESFULLY PUSHED TO HEROKU *******');
