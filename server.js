@@ -1,13 +1,11 @@
 const axios = require('axios');
 const cron = require('node-cron');
-const secrets = require('./secrets');
+if (process.env.NODE_ENV !== 'production') require('./secrets');
 const twilio = require('twilio');
-const {
-  SPORTS_FEEDS_API_KEY,
-  SPORTS_FEEDS_PASSWORD,
-  MY_NUMBER,
-  TWILIO_NUMBER,
-} = secrets;
+
+const {TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, SPORTS_FEEDS_API_KEY, SPORTS_FEEDS_PASSWORD, MY_NUMBER, TWILIO_NUMBER} = process.env
+console.log('secrets: ', TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, SPORTS_FEEDS_API_KEY, SPORTS_FEEDS_PASSWORD, MY_NUMBER, TWILIO_NUMBER)
+
 const createMessagesForLiveGames = require('./utilityFunctions');
 
 const twilioClient = new twilio(
@@ -16,7 +14,7 @@ const twilioClient = new twilio(
 );
 
 const mySportsFeedsEncryption = Buffer.from(
-  SPORTS_FEEDS_API_KEY + ':' + SPORTS_FEEDS_PASSWORD
+  process.env.SPORTS_FEEDS_API_KEY + ':' + process.env.SPORTS_FEEDS_PASSWORD
 ).toString('base64');
 
 /*
@@ -53,11 +51,17 @@ cron.schedule('*/15 * * * * *', () => {
     if (!messagesArr.length) console.log('There are no live games.')
     else messagesArr.forEach(message => {
       console.log(message)
-      twilioClient.messages.create({
-        to: MY_NUMBER,
-        from: TWILIO_NUMBER,
-        body: message
-      })
+      // twilioClient.messages.create({
+      //   to: MY_NUMBER,
+      //   from: TWILIO_NUMBER,
+      //   body: message
+      // })
     });
   });
 });
+
+twilioClient.messages.create({
+  to: process.env.MY_NUMBER,
+  from: process.env.TWILIO_NUMBER,
+  body: 'Twilio is working'
+})
