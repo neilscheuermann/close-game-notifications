@@ -1,20 +1,18 @@
 const axios = require('axios');
 const cron = require('node-cron');
-if (process.env.NODE_ENV !== 'production') require('./secrets');
 const twilio = require('twilio');
-
+if (process.env.NODE_ENV !== 'production') require('./secrets');
 const {TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, SPORTS_FEEDS_API_KEY, SPORTS_FEEDS_PASSWORD, MY_NUMBER, TWILIO_NUMBER} = process.env
-console.log('secrets: ', TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, SPORTS_FEEDS_API_KEY, SPORTS_FEEDS_PASSWORD, MY_NUMBER, TWILIO_NUMBER)
 
 const createMessagesForLiveGames = require('./utilityFunctions');
 
 const twilioClient = new twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
+  TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN
 );
 
 const mySportsFeedsEncryption = Buffer.from(
-  process.env.SPORTS_FEEDS_API_KEY + ':' + process.env.SPORTS_FEEDS_PASSWORD
+  SPORTS_FEEDS_API_KEY + ':' + SPORTS_FEEDS_PASSWORD
 ).toString('base64');
 
 /*
