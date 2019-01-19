@@ -44,24 +44,20 @@ const todaysGames = async date => {
 // When this script is running, fetchCurrentScore() will run every 15 seconds.
 // COULD FIND A WAY TO DYNAMICALLY INPUT TIMES TO RUN DEPENDING ON THE SCHEDULED GAMES THAT DAY.
 // Cron job scheduling examples - https://github.com/kelektiv/node-cron/tree/master/examples
-cron.schedule('*/15 * * * * *', () => {
-  console.log(`****** Cron Job ran at ${new Date()} *******`);
+// cron.schedule('*/15 * * * * *', () => {
+//   console.log(`****** Cron Job ran at ${new Date()} *******`);
 
-  todaysGames('20190118').then(messagesArr => {
-    if (!messagesArr.length) console.log('There are no live games.')
-    else messagesArr.forEach(message => {
-      console.log(message)
-      // twilioClient.messages.create({
-      //   to: MY_NUMBER,
-      //   from: TWILIO_NUMBER,
-      //   body: message
-      // })
-    });
-  });
-});
+//   todaysGames('20190118').then(messagesArr => {
+//     if (!messagesArr.length) console.log('There are no live games.')
+//     else messagesArr.forEach(message => {
+//       console.log(message)
+//       // twilioClient.messages.create({
+//       //   to: MY_NUMBER,
+//       //   from: TWILIO_NUMBER,
+//       //   body: message
+//       // })
+//     });
+//   });
+// });
 
-twilioClient.messages.create({
-  to: process.env.MY_NUMBER,
-  from: process.env.TWILIO_NUMBER,
-  body: 'Twilio is working'
-})
+console.log('******* SUCCESFULLY PUSHED TO HEROKU *******')
