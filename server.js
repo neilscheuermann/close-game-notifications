@@ -47,7 +47,7 @@ const todaysGames = async () => {
 // schedule and set the inner cron job to run and make axios requests only
 // during game hours.
 // TODO: On final push to production, will need to set outer cron job once to run at specified time each morning.
-cron.schedule('30 13 * * *', () => {
+cron.schedule('10 17 * * *', () => {
   console.log(`*** Outer cron job ran at ${new Date()} ***`)
 
   dailyCronJobSchedule(todaysGames).then(startEnd => {

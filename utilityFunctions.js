@@ -8,13 +8,13 @@ const createMessagesForNailBiterGames = data => {
   );
 
   // **VVV** ADJUST NAIL-BITER PREFERENCES HERE **VVV**
-  // Checks to see if any live games are within 10 points with less than 10
+  // Checks to see if any live games are within 8 points with less than 4
   // minutes remaining in the 4th.
   const nailBiters = allLiveGames.filter(game => {
     if (
       game.score.currentQuarter === 4 &&
-      game.score.currentQuarterSecondsRemaining < 600 &&
-      Math.abs(game.score.awayScoreTotal - game.score.homeScoreTotal) <= 10
+      game.score.currentQuarterSecondsRemaining < 240 &&
+      Math.abs(game.score.awayScoreTotal - game.score.homeScoreTotal) <= 8
     ) return game
   });
 
