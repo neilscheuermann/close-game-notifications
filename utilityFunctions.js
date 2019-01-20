@@ -126,6 +126,7 @@ const dailyCronJobSchedule = async fetchDailyGameData => {
   const cronJobStart = firstGameStart + 1;
   const cronJobEnd = lastGameStart + 3;
 
+  console.log('dailyCronJobSchedule ran. start and end times are: ', cronJobStart, cronJobEnd)
   return [cronJobStart, cronJobEnd];
 };
 
