@@ -14,6 +14,7 @@ const createMessagesForNailBiterGames = data => {
     if (
       game.score.currentQuarter === 4 &&
       game.score.currentQuarterSecondsRemaining < 240 &&
+      game.score.currentQuarterSecondsRemaining > 30 &&
       Math.abs(game.score.awayScoreTotal - game.score.homeScoreTotal) <= 8
     ) return game
   });
