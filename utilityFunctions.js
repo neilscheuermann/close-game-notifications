@@ -9,7 +9,7 @@ const createMessagesForNailBiterGames = data => {
 
   // **VVV** ADJUST NAIL-BITER PREFERENCES HERE **VVV**
   // Checks to see if any live games are within 8 points with less than 4
-  // minutes remaining in the 4th.
+  // minutes and greater than 30 seconds remaining in the 4th.
   const nailBiters = allLiveGames.filter(game => {
     if (
       game.score.currentQuarter === 4 &&
@@ -88,16 +88,16 @@ const createMessagesForNailBiterGames = data => {
       const timeRemaining = currentQuarter
         ? quarterMessage
         : intermissionMessage;
-      return `${score} --------- ${timeRemaining}.`;
+      return `${score} --- ${timeRemaining}.`;
     };
 
-    // Returns an object with the compiled message and game id for each
-    // nail-biter game.
-    return { message: compiledMessage(), gameId: game.schedule.id };
+    // Returns an object with the compiled message, game id, and team names for
+    // each nail-biter game.
+    return { message: compiledMessage(), gameId: game.schedule.id, teamsPlaying: `${awayTeamAbb}-${homeTeamAbb}` };
   });
 
-  // Returns an array of objects with compiled messages and game for each
-  // nail-biter game.
+  // Returns an array of objects with compiled messages, game id, and team
+  // names for each nail-biter game.
   return nailBiterMessagesArr;
 };
 

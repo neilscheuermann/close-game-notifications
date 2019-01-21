@@ -13,6 +13,7 @@ const {
   MY_NUMBER,
   TWILIO_NUMBER,
 } = process.env;
+// Returns the current date in YYYYMMDD format
 const currentDate = formatDate(new Date())
 
 // Authenticating twilio account
@@ -47,7 +48,7 @@ const todaysGames = async () => {
 // schedule and set the inner cron job to run and make axios requests only
 // during game hours.
 // TODO: On final push to production, will need to set outer cron job once to run at specified time each morning. DIDN'T PULL THE RIGHT DATA WHEN IT RAN AT 6AM???
-cron.schedule('24 10 * * *', () => {
+cron.schedule('57 11 * * *', () => {
   console.log(`*** Outer cron job ran at ${new Date()} ***`)
 
   // Checks today's games and returns the time to start and end the inner cron
@@ -55,7 +56,7 @@ cron.schedule('24 10 * * *', () => {
   // starts.)
   dailyCronJobSchedule(todaysGames).then(startEnd => {
     const [start, end] = startEnd
-    console.log(`*** Inner cron job will check scores every 15 seconds from ${start}:00 through ${end}:59. (ran at ${new Date()}***`)
+    console.log(`*** Inner cron job will check scores every 15 seconds today from ${start}:00 through ${end}:59. (ran at ${new Date()}***`)
 
     // Object to track if a message about a nail-biter has been sent.
     const messageHasBeenSent = {}
@@ -70,20 +71,20 @@ cron.schedule('24 10 * * *', () => {
       todaysGames().then(data => createMessagesForNailBiterGames(data)).then(messagesArr => {
         if (!messagesArr.length) console.log('There are no nail-biters.')
 
-        // Loops through each message of the nail-biter array.
+        // Loops through each object of the nail-biter array.
         else messagesArr.forEach(message => {
           // Sends one notification per close game, then adds message to
-          // tracker object to prevent repeated messages from being sent.
+          // tracker object to prevent sending repeated messages.
           if (!messageHasBeenSent[message.gameId]) {
-            console.log(`The following message has been sent to subscribers: ${message.message}. (Game id #${message.gameId})` )
             twilioClient.messages.create({
               to: MY_NUMBER,
               from: TWILIO_NUMBER,
               body: message.message
             })
+            console.log(`The following message has been sent to subscribers: ${message.message}. (Game id #${message.gameId})` )
             messageHasBeenSent[message.gameId] = true
           } else {
-            console.log(`Message for game id #${message.gameId} has already been sent`)
+            console.log(`Message for the ${message.teamsPlaying} game has already been sent.`)
           }
         });
       });
