@@ -115,19 +115,22 @@ const formatDate = date => {
 };
 
 // Finds the start time for each daily game and returns the hour to start and
-// end the cron job that will live data for the games.
+// end the cron job that will fetch live data for the games.
 const dailyCronJobSchedule = async fetchDailyGameData => {
   const data = await fetchDailyGameData();
 
-  const [firstGameStart, lastGameStart] = data.games
+  const gameStartHours = data.games
     .map(game => new Date(game.schedule.startTime).getHours())
-    .filter((game, idx, arr) => idx === 0 || idx === arr.length - 1);
+
+  // Pulls first game and last game data from array of game start hours.
+  const firstGameStart = gameStartHours[0]
+  const lastGameStart = gameStartHours[gameStartHours.length - 1]
   // Daily cron job should start 1 hour after the first game starts and end 3-4
   // hours after the last game starts.
   const cronJobStart = firstGameStart + 1;
   const cronJobEnd = lastGameStart + 3;
 
-  console.log('dailyCronJobSchedule ran. start and end times are: ', cronJobStart, cronJobEnd)
+  console.log({firstGameStart}, {lastGameStart}, {cronJobStart}, {cronJobEnd}, 'ran at: ', new Date())
   return [cronJobStart, cronJobEnd];
 };
 

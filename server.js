@@ -46,13 +46,16 @@ const todaysGames = async () => {
 // At specified time each day, dailyCronJobSchedule will look at the day's NBA
 // schedule and set the inner cron job to run and make axios requests only
 // during game hours.
-// TODO: On final push to production, will need to set outer cron job once to run at specified time each morning.
-cron.schedule('0 6 * * *', () => {
+// TODO: On final push to production, will need to set outer cron job once to run at specified time each morning. DIDN'T PULL THE RIGHT DATA WHEN IT RAN AT 6AM???
+cron.schedule('24 10 * * *', () => {
   console.log(`*** Outer cron job ran at ${new Date()} ***`)
 
+  // Checks today's games and returns the time to start and end the inner cron
+  // job (1 hour after the first game starts and 3 hours after the last game
+  // starts.)
   dailyCronJobSchedule(todaysGames).then(startEnd => {
     const [start, end] = startEnd
-    console.log(`*** Inner cron job will check scores every 15 seconds from ${start}:00 through ${end}:59. ***`)
+    console.log(`*** Inner cron job will check scores every 15 seconds from ${start}:00 through ${end}:59. (ran at ${new Date()}***`)
 
     // Object to track if a message about a nail-biter has been sent.
     const messageHasBeenSent = {}
