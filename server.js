@@ -47,8 +47,7 @@ const todaysGames = async () => {
 // At specified time each day, dailyCronJobSchedule will look at the day's NBA
 // schedule and set the inner cron job to run and make axios requests only
 // during game hours.
-// TODO: On final push to production, will need to set outer cron job once to run at specified time each morning. DIDN'T PULL THE RIGHT DATA WHEN IT RAN AT 6AM???
-cron.schedule('57 11 * * *', () => {
+cron.schedule('48 9 * * *', () => {
   console.log(`*** Outer cron job ran at ${new Date()} ***`)
 
   // Checks today's games and returns the time to start and end the inner cron
