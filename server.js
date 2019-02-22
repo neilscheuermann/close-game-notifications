@@ -47,8 +47,8 @@ const todaysGames = async () => {
 // At specified time each day, dailyCronJobSchedule will look at the day's NBA
 // schedule and set the inner cron job to run and make axios requests only
 // during game hours.
-cron.schedule('0 10 * * *', () => {
-  console.log(`*** Outer cron job ran at ${new Date()} ***`)
+// cron.schedule('0 10 * * *', () => {
+//   console.log(`*** Outer cron job ran at ${new Date()} ***`)
 
   // Checks today's games and returns the time to start and end the inner cron
   // job (1 hour after the first game starts and 3 hours after the last game
@@ -90,4 +90,4 @@ cron.schedule('0 10 * * *', () => {
     });
   })
 
-})
+// })
