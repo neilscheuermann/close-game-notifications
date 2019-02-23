@@ -44,8 +44,8 @@ const todaysGames = async () => {
 };
 
 // Specifies when outer cron job runs.
-const outerCronHour = 17
-const outerCronMin = 10
+const outerCronHour = 13
+const outerCronMin = 15
 
 // Sends me a message when app restarts. Telling me what time it restarted and
 // when the outer cron job is set to run.
