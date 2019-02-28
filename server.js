@@ -43,17 +43,28 @@ const todaysGames = async () => {
   }
 };
 
-// Specifies when outer cron job runs.
-const outerCronHour = 20
-const outerCronMin = 28
 
-// Sends me a message when app restarts. Telling me what time it restarted and
-// when the outer cron job is set to run.
-twilioClient.messages.create({
-  to: MY_NUMBER,
-  from: TWILIO_NUMBER,
-  body: `***** Nail-Biter has reset at ${new Date()}. Outer cron job set to run at ${outerCronHour}:${outerCronMin}. *****`
-})
+
+
+const today = new Date();
+const currentHour = today.getHours()
+console.log('current time: ', typeof currentHour, currentHour)
+const currentMinute = today.getMinutes()
+console.log('current time: ', typeof currentMinute, currentMinute)
+
+// Specifies when outer cron job runs.
+const outerCronHour = currentHour <= 10 ? 10 : currentHour
+const outerCronMin = currentHour <= 10 ? 0 : currentMinute + 1
+console.log(outerCronHour)
+console.log(outerCronMin)
+
+// // Sends me a message when app restarts. Telling me what time it restarted and
+// // when the outer cron job is set to run.
+// twilioClient.messages.create({
+//   to: MY_NUMBER,
+//   from: TWILIO_NUMBER,
+//   body: `***** Nail-Biter has reset at ${new Date()}. Outer cron job set to run at ${outerCronHour}:${outerCronMin}. *****`
+// })
 
 // At specified time each day, dailyCronJobSchedule will look at the day's NBA
 // schedule and set the inner cron job to run and make axios requests only
@@ -107,7 +118,7 @@ cron.schedule(`${outerCronMin} ${outerCronHour} * * *`, () => {
 
 
 
-// TODO: FIND A WAY TO GET CRON JOBS TO RESTART AND RUN WHEN APP DOES OR DOESN'T CRASH.
+// // TODO: FIND A WAY TO GET CRON JOBS TO RESTART AND RUN WHEN APP DOES OR DOESN'T CRASH.
 
 // const today = new Date();
 // const currentTime = today.getHours()
