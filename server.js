@@ -34,7 +34,7 @@ const todaysGames = async () => {
     // Pulls a JSON file of most up-to-date live data for all of today's games.
     const { data } = await axios({
       type: 'GET',
-      url: `https://api.mysportsfeeds.com/v2.0/pull/nba/2018-2019-regular/date/${currentDate}/games.json`,
+      url: `https://api.mysportsfeeds.com/v2.0/pull/nba/2019-playoff/date/${currentDate}/games.json`,
       dataType: 'json',
       headers: {
         Authorization: 'Basic ' + mySportsFeedsEncryption,
@@ -121,98 +121,3 @@ cron.schedule(`${outerCronMin} ${outerCronHour} * * *`, () => {
     })
   })
 })
-
-// // TODO: FIND A WAY TO GET CRON JOBS TO RESTART AND RUN WHEN APP DOES OR DOESN'T CRASH.
-
-// const today = new Date();
-// const currentTime = today.getHours()
-// console.log('current time: ', typeof currentTime, currentTime)
-// if (currentTime < 10) {
-//   // At specified time each day, dailyCronJobSchedule will look at the day's NBA
-//   // schedule and set the inner cron job to run and make axios requests only
-//   // during game hours.
-//   cron.schedule('0 10 * * *', () => {
-//     console.log(`*** Outer cron job ran at ${new Date()} ***`)
-
-//     // Checks today's games and returns the time to start and end the inner cron
-//     // job (1 hour after the first game starts and 3 hours after the last game
-//     // starts.)
-//     dailyCronJobSchedule(todaysGames).then(startEnd => {
-//       const [start, end] = startEnd
-//       console.log(`*** Inner cron job will check scores every 15 seconds today from ${start}:00 through ${end}:59. (ran at ${new Date()}***`)
-
-//       // Object to track if a message about a nail-biter has been sent.
-//       const messageHasBeenSent = {}
-
-//       // This job will run every 15 seconds during hours of live NBA games.
-//       cron.schedule(`*/15 * ${start}-${end} * * *`, () => {
-//         console.log(`*** Inner cron job ran at ${new Date()} ***`);
-
-//         // Fetches the most recent live data for todays games, passes it to
-//         // helper function that returns an array of messages for any nail-biter
-//         // games.
-//         todaysGames().then(data => createMessagesForNailBiterGames(data)).then(messagesArr => {
-//           if (!messagesArr.length) console.log('There are no nail-biters.')
-
-//           // Loops through each object of the nail-biter array.
-//           else messagesArr.forEach(message => {
-//             // Sends one notification per close game, then adds message to
-//             // tracker object to prevent sending repeated messages.
-//             if (!messageHasBeenSent[message.gameId]) {
-//               twilioClient.messages.create({
-//                 to: MY_NUMBER,
-//                 from: TWILIO_NUMBER,
-//                 body: message.message
-//               })
-//               console.log(`The following message has been sent to subscribers: ${message.message}. (Game id #${message.gameId})` )
-//               messageHasBeenSent[message.gameId] = true
-//             } else {
-//               console.log(`Message for the ${message.teamsPlaying} game has already been sent.`)
-//             }
-//           });
-//         });
-//       });
-//     })
-
-//   })
-// } else {
-//   // Checks today's games and returns the time to start and end the inner cron
-//   // job (1 hour after the first game starts and 3 hours after the last game
-//   // starts.)
-//   dailyCronJobSchedule(todaysGames).then(startEnd => {
-//     const [start, end] = startEnd
-//     console.log(`*** Inner cron job will check scores every 15 seconds today from ${start}:00 through ${end}:59. (ran at ${new Date()}***`)
-
-//     // Object to track if a message about a nail-biter has been sent.
-//     const messageHasBeenSent = {}
-
-//     // This job will run every 15 seconds during hours of live NBA games.
-//     cron.schedule(`*/15 * ${start}-${end} * * *`, () => {
-//       console.log(`*** Inner cron job ran at ${new Date()} ***`);
-
-//       // Fetches the most recent live data for todays games, passes it to
-//       // helper function that returns an array of messages for any nail-biter
-//       // games.
-//       todaysGames().then(data => createMessagesForNailBiterGames(data)).then(messagesArr => {
-//         if (!messagesArr.length) console.log('There are no nail-biters.')
-
-//         // Loops through each object of the nail-biter array.
-//         else messagesArr.forEach(message => {
-//           // Sends one notification per close game, then adds message to
-//           // tracker object to prevent sending repeated messages.
-//           if (!messageHasBeenSent[message.gameId]) {
-//             twilioClient.messages.create({
-//               to: MY_NUMBER,
-//               from: TWILIO_NUMBER,
-//               body: message.message
-//             })
-//             console.log(`The following message has been sent to subscribers: ${message.message}. (Game id #${message.gameId})` )
-//             messageHasBeenSent[message.gameId] = true
-//           } else {
-//             console.log(`Message for the ${message.teamsPlaying} game has already been sent.`)
-//           }
-//         });
-//       });
-//     });
-//   })
-// }
